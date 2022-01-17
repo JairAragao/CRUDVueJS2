@@ -40,65 +40,65 @@
                   <v-card-text>
                     <v-container fluid>
                       <v-row>
-                        <template v-for="input in params">
+                        <template v-for="field in params">
                           <v-col
                             cols="auto"
-                            :key="input.text"
+                            :key="field.text"
                           >
                             <!-- CAMPOS DE TEXTO -->
                             <v-text-field
-                              v-if="input.type === 'text' && input.maxLength <= 100"
-                              v-model="editedItem.name"
-                              :name="input.value"
-                              :label="input.text"
-                              :maxlength="input.maxLength"
-                              :error="input.required === true && input.input === ''"
+                              v-if="field.type === 'text' && field.maxLength <= 100"
+                              v-model="field.input"
+                              :name="field.value"
+                              :label="field.text"
+                              :maxlength="field.maxLength"
+                              :error="field.required === true && field.input === ''"
                             />
                             <v-textarea
-                              v-else-if="input.type === 'text' && input.maxLength > 100"
-                              v-model.trim="editedItem.description"
-                              :name="input.value"
-                              :label="input.text"
-                              :maxlength="input.maxLength"
-                              :error="input.required === true && input.input === ''"
+                              v-else-if="field.type === 'text' && field.maxLength > 100"
+                              v-model.trim="field.input"
+                              :name="field.value"
+                              :label="field.text"
+                              :maxlength="field.maxLength"
+                              :error="field.required === true && field.input === ''"
                             />
                             <!-- CHECKBOX -->
                             <v-checkbox
-                              v-else-if="input.type === 'boolean'"
-                              v-model="editedItem.checked"
-                              :name="input.value"
-                              :label="input.text"
+                              v-else-if="field.type === 'boolean'"
+                              v-model="field.input"
+                              :name="field.value"
+                              :label="field.text"
                             />
                             <!-- CAPOS NUMERICOS -->
                             <v-text-field
-                              v-else-if="input.type === 'integer'"
-                              v-model.number.trim="editedItem.integer"
+                              v-else-if="field.type === 'integer'"
+                              v-model.number.trim="field.input"
                               type="number"
-                              :name="input.value"
-                              :label="input.text"
-                              :maxlength="input.maxLength"
-                              :error="input.required === true && input.input === '' || !Number.isInteger(input.input)"
+                              :name="field.value"
+                              :label="field.text"
+                              :maxlength="field.maxLength"
+                              :error="field.required === true && field.input === '' || !Number.isInteger(field.input)"
                             />
                             <v-text-field
-                              v-else-if="input.type === 'decimal'"
-                              v-model.number.trim="editedItem.decimal"
+                              v-else-if="field.type === 'decimal'"
+                              v-model.number.trim="field.input"
                               type="number"
-                              :name="input.value"
-                              :label="input.text"
-                              :maxlength="input.maxLength"
-                              :error="input.required === true && input.input === ''"
+                              :name="field.value"
+                              :label="field.text"
+                              :maxlength="field.maxLength"
+                              :error="field.required === true && field.input === ''"
                             />
                             <!-- SELETORES -->
                             <v-select
-                              v-else-if="input.type === 'select'"
-                              v-model="editedItem.status"
-                              :name="input.value"
-                              :label="input.text"
-                              :items="input.items"
-                              :error="input.required === true && input.input === ''"
+                              v-else-if="field.type === 'select'"
+                              v-model="field.input"
+                              :name="field.value"
+                              :label="field.text"
+                              :items="field.items"
+                              :error="field.required === true && field.input === ''"
                             />
                             <!-- CAMPO DATA -->
-                            <template v-else-if="input.type === 'date'">
+                            <template v-else-if="field.type === 'date'">
                               <v-row>
                                 <v-col
                                   cols="auto"
@@ -113,7 +113,7 @@
                                   >
                                     <template v-slot:activator="{ on, attrs }">
                                       <v-text-field
-                                        v-model="editedItem.date"
+                                        v-model="field.input"
                                         v-bind="attrs"
                                         v-on="on"
                                         prepend-icon="mdi-calendar"
@@ -121,12 +121,12 @@
                                         locale="pt-BR"
                                         elevation="5"
                                         readonly
-                                        :label="input.text"
-                                        :error="input.required === true && input.input === ''"
+                                        :label="field.text"
+                                        :error="field.required === true && field.input === ''"
                                       />
                                     </template>
                                     <v-date-picker
-                                      v-model="input.input"
+                                      v-model="field.input"
                                       @input="menu = false"
                                     />
                                   </v-menu>
@@ -134,15 +134,15 @@
                               </v-row>
                             </template>
                             <!-- CAMPO HORA -->
-                            <template v-else-if="input.type === 'time'">
+                            <template v-else-if="field.type === 'time'">
                               <v-row>
                                 <v-col cols="auto">
-                                  <p>{{ input.text }}:</p>
+                                  <p>{{ field.text }}:</p>
                                 </v-col>
                                 <v-col>
                                   <v-icon
-                                    v-if="input.input !== null && input.input !== ''"
-                                    @click="input.input = null"
+                                    v-if="field.input !== null && field.input !== ''"
+                                    @click="field.input = null"
                                     color="red accent-1"
                                     >fas fa-window-close</v-icon
                                   >
@@ -152,7 +152,7 @@
                                 v-model="editedItem.time"
                                 type="time"
                                 name="hora-cons"
-                                :error="input.required === true && input.input === ''"
+                                :error="field.required === true && field.input === ''"
                               />
                             </template>
                             <!-- CAMPO DATA E HORA -->
@@ -169,7 +169,7 @@
                     <v-btn
                       color="blue darken-1"
                       text
-                      @click="close"
+                      @click="dialog = false"
                     >
                       Cancelar
                     </v-btn>
@@ -217,7 +217,7 @@
     </v-container>
     {{ }}
     <v-spacer></v-spacer>
-    {{ editedItem }}
+    {{  }}
   </div>
 </template>
 
@@ -239,11 +239,14 @@ export default {
   methods: {
     initialize() {
       for (let i = 0;  i < this.params.length; i++) {
+        //if (this.params[i].header) {
+          //}
         this.headers.push({text: this.params[i].text, value: this.params[i].value }) // Adiciona os os titulos da tabela
         let editableItemInput = this.params[i].input
         let editableItemValue = this.params[i].value
         this.editedItem[editableItemValue] = editableItemInput;
       }
+      console.log(this.editedItem)
       this.headers.push({text: 'Ações', value: 'actions', sortable: false})
     },
     save () {
@@ -252,7 +255,7 @@ export default {
       } else {
         this.desserts.push(this.editedItem)
       }
-      this.close()
+      this.dialog = false
     },
     editItem (item) {
       this.editedIndex = this.desserts.indexOf(item)
@@ -271,14 +274,6 @@ export default {
       this.closeDelete()
     },
 
-    close () {
-      this.dialog = false
-      this.$nextTick(() => {
-        this.editedItem = Object.assign({}, this.defaultItem)
-        this.editedIndex = -1
-      })
-    },
-
     closeDelete () {
       this.dialogDelete = false
       this.$nextTick(() => {
@@ -289,7 +284,12 @@ export default {
   },
   watch: {
     dialog (val) {
-      val || this.close()
+      if (val) {
+        this.$nextTick(() => {
+        this.editedItem = Object.assign({}, this.defaultItem)
+        this.editedIndex = -1
+      })
+      }
     },
     dialogDelete (val) {
       val || this.closeDelete()

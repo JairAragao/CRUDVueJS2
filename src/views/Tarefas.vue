@@ -31,7 +31,7 @@ export default {
         value: "description",
         input: "",
         type: "text",
-        header: true,
+        header: false,
         edit: true,
         maxLength: 200,
         required: true
