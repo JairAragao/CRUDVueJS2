@@ -72,12 +72,12 @@
                             <!-- CAPOS NUMERICOS -->
                             <v-text-field
                               v-else-if="input.type === 'integer'"
-                              v-model.number.trim="editedItem.int"
+                              v-model.number.trim="editedItem.integer"
                               type="number"
                               :name="input.value"
                               :label="input.text"
                               :maxlength="input.maxLength"
-                              :error="input.required === true && input.input === ''"
+                              :error="input.required === true && input.input === '' || !Number.isInteger(input.input)"
                             />
                             <v-text-field
                               v-else-if="input.type === 'decimal'"
@@ -149,7 +149,7 @@
                                 </v-col>
                               </v-row>
                               <input
-                                v-model="editedItem.hour"
+                                v-model="editedItem.time"
                                 type="time"
                                 name="hora-cons"
                                 :error="input.required === true && input.input === ''"
@@ -215,8 +215,9 @@
         </v-data-table>
       </template>
     </v-container>
-    {{ desserts }}
-    {{  }}
+    {{ }}
+    <v-spacer></v-spacer>
+    {{ editedItem }}
   </div>
 </template>
 
@@ -232,26 +233,16 @@ export default {
       editedIndex: -1,
       headers: [], // Titulo das colunas
       desserts: [], // itens da tabela
-      editedItem: {
-        name: '',
-        int: 0,
-        description: '',
-        checked: false,
-        status: false,
-        date: "",
-        decimal: 0,
-        hour: "",
-      },
-    } 
+      editedItem: {},
+    }
   },
   methods: {
     initialize() {
       for (let i = 0;  i < this.params.length; i++) {
-        this.headers.push({text: this.params[i].text, value: this.params[i].value }) // Adiciona os os titulos da tabela com base nos parametros passados na tela
-        //if (this.params[i].edit === true) {
-          //this.editedItem.push(this.params[i].input)
-        //}
-        console.log(this.params[i])
+        this.headers.push({text: this.params[i].text, value: this.params[i].value }) // Adiciona os os titulos da tabela
+        let editableItemInput = this.params[i].input
+        let editableItemValue = this.params[i].value
+        this.editedItem[editableItemValue] = editableItemInput;
       }
       this.headers.push({text: 'Ações', value: 'actions', sortable: false})
     },

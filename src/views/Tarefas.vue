@@ -18,7 +18,7 @@ export default {
     bilder: [
       {
         text: "Nome",
-        value: "nome",
+        value: "name",
         input: "",
         type: "text",
         header: true,
@@ -28,7 +28,7 @@ export default {
       },
       {
         text: "Descrição completa",
-        value: "descricaoCompleta",
+        value: "description",
         input: "",
         type: "text",
         header: true,
@@ -38,15 +38,15 @@ export default {
       },
       {
         text: "checkbox",
-        value: "O",
-        input: "",
+        value: "checked",
+        input: false,
         type: "boolean",
         header: true,
         edit: true,
       },      
       {
         text: "Status",
-        value: "enviado",
+        value: "status",
         input: "",
         type: "select",
         header: true,
@@ -60,7 +60,7 @@ export default {
       },
       {
         text: "Inteiro",
-        value: "id",
+        value: "integer",
         input: "",
         type: "integer",
         maxLength: 3,
