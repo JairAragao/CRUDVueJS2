@@ -149,7 +149,7 @@
                                 </v-col>
                               </v-row>
                               <input
-                                v-model="editedItem.time"
+                                v-model="field.input"
                                 type="time"
                                 name="hora-cons"
                                 :error="field.required === true && field.input === ''"
@@ -217,7 +217,7 @@
     </v-container>
     {{ }}
     <v-spacer></v-spacer>
-    {{  }}
+    {{ desserts }}
   </div>
 </template>
 
@@ -239,22 +239,24 @@ export default {
   methods: {
     initialize() {
       for (let i = 0;  i < this.params.length; i++) {
-        //if (this.params[i].header) {
-          //}
-        this.headers.push({text: this.params[i].text, value: this.params[i].value }) // Adiciona os os titulos da tabela
+        if (this.params[i].header) {
+          this.headers.push({text: this.params[i].text, value: this.params[i].value }) // Adiciona os os titulos da tabela
+        }
         let editableItemInput = this.params[i].input
         let editableItemValue = this.params[i].value
         this.editedItem[editableItemValue] = editableItemInput;
       }
-      console.log(this.editedItem)
       this.headers.push({text: 'Ações', value: 'actions', sortable: false})
     },
     save () {
-      if (this.editedIndex > -1) {
-        Object.assign(this.desserts[this.editedIndex], this.editedItem)
-      } else {
-        this.desserts.push(this.editedItem)
+      let result = {}
+      //result.banana = 'a'
+      //result["teste"] = "b"
+      for (let i = 0; i < this.params.length; i++) {
+        result[this.params[i].value] = this.params[i].input
       }
+      console.log(result)
+      this.desserts.push(result)
       this.dialog = false
     },
     editItem (item) {
