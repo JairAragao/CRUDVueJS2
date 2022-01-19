@@ -2,6 +2,199 @@
   <div>
     <v-container>
       <template>
+        <template>
+           <!-- BOTÃO ADICIONAR ITEM -->
+          <template>
+            <v-btn
+              color="primary"
+              dark
+              class="mb-2"
+              @click="addItem"
+            >
+              Adicionar item
+            </v-btn>
+          </template>
+          
+          <!-- BOTÕES E CAMPOS DO "ADICIONAR ITEM" -->
+          <v-dialog
+            v-model="dialogAddItem"
+            max-width="500px"
+            @click:outside="close"
+          >
+            <v-card>
+              <v-card-text>
+                <v-container fluid>
+                  <v-row>
+                    <template v-for="field in params">
+                      <v-col
+                        cols="auto"
+                        :key="field.text"
+                      >
+                        <!-- CAMPOS DE TEXTO -->
+                        <v-text-field
+                          v-if="field.type === 'text' && field.maxLength <= 100"
+                          v-model="field.input"
+                          :name="field.value"
+                          :label="field.text"
+                          :maxlength="field.maxLength"
+                          :error="field.required === true && field.input === ''"
+                        />
+                        <v-textarea
+                          v-else-if="field.type === 'text' && field.maxLength > 100"
+                          v-model.trim="field.input"
+                          :name="field.value"
+                          :label="field.text"
+                          :maxlength="field.maxLength"
+                          :error="field.required === true && field.input === ''"
+                        />
+                        <!-- CHECKBOX -->
+                        <v-checkbox
+                          v-else-if="field.type === 'boolean'"
+                          v-model="field.input"
+                          :name="field.value"
+                          :label="field.text"
+                        />
+                        <!-- CAPOS NUMERICOS -->
+                        <v-text-field
+                          v-else-if="field.type === 'integer'"
+                          v-model.number.trim="field.input"
+                          type="number"
+                          :name="field.value"
+                          :label="field.text"
+                          :maxlength="field.maxLength"
+                          :error="field.required === true && field.input === '' || !Number.isInteger(field.input)"
+                        />
+                        <v-text-field
+                          v-else-if="field.type === 'decimal'"
+                          v-model.number.trim="field.input"
+                          type="number"
+                          :name="field.value"
+                          :label="field.text"
+                          :maxlength="field.maxLength"
+                          :error="field.required === true && field.input === ''"
+                        />
+                        <!-- SELETORES -->
+                        <v-select
+                          v-else-if="field.type === 'select'"
+                          v-model="field.input"
+                          :name="field.value"
+                          :label="field.text"
+                          :items="field.items"
+                          :error="field.required === true && field.input === ''"
+                        />
+                        <!-- CAMPO DATA -->
+                        <template v-else-if="field.type === 'date'">
+                          <v-row>
+                            <v-col
+                              cols="auto"
+                            >
+                              <v-menu
+                                v-model="menu"
+                                :close-on-content-click="false"
+                                :nudge-right="40"
+                                transition="scale-transition"
+                                offset-y
+                                min-width="auto"
+                              >
+                                <template v-slot:activator="{ on, attrs }">
+                                  <v-text-field
+                                    v-model="field.input"
+                                    v-bind="attrs"
+                                    v-on="on"
+                                    prepend-icon="mdi-calendar"
+                                    color="secondary"
+                                    locale="pt-BR"
+                                    elevation="5"
+                                    readonly
+                                    :label="field.text"
+                                    :error="field.required === true && field.input === ''"
+                                  />
+                                </template>
+                                <v-date-picker
+                                  v-model="field.input"
+                                  @input="menu = false"
+                                />
+                              </v-menu>
+                            </v-col>
+                          </v-row>
+                        </template>
+                        <!-- CAMPO HORA -->
+                        <template v-else-if="field.type === 'time'">
+                          <v-row>
+                            <v-col cols="auto">
+                              <p>{{ field.text }}:</p>
+                            </v-col>
+                            <v-col>
+                              <v-icon
+                                v-if="field.input !== null && field.input !== ''"
+                                @click="field.input = null"
+                                color="red accent-1"
+                                >fas fa-window-close</v-icon
+                              >
+                            </v-col>
+                          </v-row>
+                          <input
+                            v-model="field.input"
+                            type="time"
+                            name="hora-cons"
+                            :error="field.required === true && field.input === ''"
+                          />
+                        </template>
+                        <!-- CAMPO DATA E HORA -->
+                        <!-- CAMPO IMAGEM -->
+                      </v-col>
+                    </template>
+                  </v-row>
+                </v-container>
+              </v-card-text>
+
+              <v-card-actions>
+                <v-spacer></v-spacer>
+                <v-btn
+                  color="blue darken-1"
+                  text
+                  @click="close"
+                >
+                  Cancelar
+                </v-btn>
+                <v-btn
+                  color="blue darken-1"
+                  text
+                  v-if="!isEdited"
+                  @click="saveNew"
+                >
+                  Salvar n
+                </v-btn>
+                <v-btn
+                  color="blue darken-1"
+                  text
+                  v-if="isEdited"
+                  @click="saveEdited"
+                >
+                  Salvar
+                </v-btn>
+              </v-card-actions>
+            </v-card>
+          </v-dialog>
+
+          <!-- CONFIRMAÇÃO DE EXCLUSÃO ITEM -->
+          <v-dialog 
+            v-model="dialogDelete" 
+            max-width="600px"
+          >
+            <v-card>
+              <v-card-title class="text-h5">Tem certeza de que deseja excluir este item?</v-card-title>
+              <v-card-actions>
+                <v-spacer/>
+                <v-btn color="blue darken-1" text @click="closeDelete">Não</v-btn>
+                <v-btn color="blue darken-1" text @click="deleteItemConfirm">Sim</v-btn>
+                <v-spacer/>
+              </v-card-actions>
+            </v-card>
+          </v-dialog>
+        </template>
+
+        <!-- BARRA DE PESQUISA -->
         <v-card-title>
           <v-text-field
             v-model="search"
@@ -11,194 +204,13 @@
             hide-details
           ></v-text-field>
         </v-card-title>
+
+        <!-- TABELA -->
         <v-data-table
           :headers="headers"
           :items="desserts"
           class="elevation-1"
         >
-          <template v-slot:top>
-            <v-toolbar flat>
-              <v-spacer></v-spacer>
-              <v-dialog
-                v-model="dialog"
-                max-width="500px"
-              >
-                <template v-slot:activator="{ on, attrs }">
-                  <v-btn
-                    color="primary"
-                    dark
-                    class="mb-2"
-                    v-bind="attrs"
-                    v-on="on"
-                  >
-                    Adicionar item
-                  </v-btn>
-                </template>
-                
-                <v-card>
-                  <!-- CAMPOS DO "ADICIONAR ITEM" (melhorar tamanho do card)-->
-                  <v-card-text>
-                    <v-container fluid>
-                      <v-row>
-                        <template v-for="field in params">
-                          <v-col
-                            cols="auto"
-                            :key="field.text"
-                          >
-                            <!-- CAMPOS DE TEXTO -->
-                            <v-text-field
-                              v-if="field.type === 'text' && field.maxLength <= 100"
-                              v-model="field.input"
-                              :name="field.value"
-                              :label="field.text"
-                              :maxlength="field.maxLength"
-                              :error="field.required === true && field.input === ''"
-                            />
-                            <v-textarea
-                              v-else-if="field.type === 'text' && field.maxLength > 100"
-                              v-model.trim="field.input"
-                              :name="field.value"
-                              :label="field.text"
-                              :maxlength="field.maxLength"
-                              :error="field.required === true && field.input === ''"
-                            />
-                            <!-- CHECKBOX -->
-                            <v-checkbox
-                              v-else-if="field.type === 'boolean'"
-                              v-model="field.input"
-                              :name="field.value"
-                              :label="field.text"
-                            />
-                            <!-- CAPOS NUMERICOS -->
-                            <v-text-field
-                              v-else-if="field.type === 'integer'"
-                              v-model.number.trim="field.input"
-                              type="number"
-                              :name="field.value"
-                              :label="field.text"
-                              :maxlength="field.maxLength"
-                              :error="field.required === true && field.input === '' || !Number.isInteger(field.input)"
-                            />
-                            <v-text-field
-                              v-else-if="field.type === 'decimal'"
-                              v-model.number.trim="field.input"
-                              type="number"
-                              :name="field.value"
-                              :label="field.text"
-                              :maxlength="field.maxLength"
-                              :error="field.required === true && field.input === ''"
-                            />
-                            <!-- SELETORES -->
-                            <v-select
-                              v-else-if="field.type === 'select'"
-                              v-model="field.input"
-                              :name="field.value"
-                              :label="field.text"
-                              :items="field.items"
-                              :error="field.required === true && field.input === ''"
-                            />
-                            <!-- CAMPO DATA -->
-                            <template v-else-if="field.type === 'date'">
-                              <v-row>
-                                <v-col
-                                  cols="auto"
-                                >
-                                  <v-menu
-                                    v-model="menu"
-                                    :close-on-content-click="false"
-                                    :nudge-right="40"
-                                    transition="scale-transition"
-                                    offset-y
-                                    min-width="auto"
-                                  >
-                                    <template v-slot:activator="{ on, attrs }">
-                                      <v-text-field
-                                        v-model="field.input"
-                                        v-bind="attrs"
-                                        v-on="on"
-                                        prepend-icon="mdi-calendar"
-                                        color="secondary"
-                                        locale="pt-BR"
-                                        elevation="5"
-                                        readonly
-                                        :label="field.text"
-                                        :error="field.required === true && field.input === ''"
-                                      />
-                                    </template>
-                                    <v-date-picker
-                                      v-model="field.input"
-                                      @input="menu = false"
-                                    />
-                                  </v-menu>
-                                </v-col>
-                              </v-row>
-                            </template>
-                            <!-- CAMPO HORA -->
-                            <template v-else-if="field.type === 'time'">
-                              <v-row>
-                                <v-col cols="auto">
-                                  <p>{{ field.text }}:</p>
-                                </v-col>
-                                <v-col>
-                                  <v-icon
-                                    v-if="field.input !== null && field.input !== ''"
-                                    @click="field.input = null"
-                                    color="red accent-1"
-                                    >fas fa-window-close</v-icon
-                                  >
-                                </v-col>
-                              </v-row>
-                              <input
-                                v-model="field.input"
-                                type="time"
-                                name="hora-cons"
-                                :error="field.required === true && field.input === ''"
-                              />
-                            </template>
-                            <!-- CAMPO DATA E HORA -->
-                            <!-- CAMPO IMAGEM -->
-                          </v-col>
-                        </template>
-                      </v-row>
-                    </v-container>
-                  </v-card-text>
-
-                  <!-- BOTÕES DE AÇÃO DO "ADICIONAR ITEM" -->
-                  <v-card-actions>
-                    <v-spacer></v-spacer>
-                    <v-btn
-                      color="blue darken-1"
-                      text
-                      @click="dialog = false"
-                    >
-                      Cancelar
-                    </v-btn>
-                    <v-btn
-                      color="blue darken-1"
-                      text
-                      @click="save"
-                    >
-                      Salvar
-                    </v-btn>
-                  </v-card-actions>
-                </v-card>
-              </v-dialog>
-
-              <!-- CONFIRMAÇÃO DE EXCLUSÃO ITEM -->
-              <v-dialog v-model="dialogDelete" max-width="600px">
-                <v-card>
-                  <v-card-title class="text-h5">Tem certeza de que deseja excluir este item?</v-card-title>
-                  <v-card-actions>
-                    <v-spacer/>
-                    <v-btn color="blue darken-1" text @click="closeDelete">Não</v-btn>
-                    <v-btn color="blue darken-1" text @click="deleteItemConfirm">Sim</v-btn>
-                    <v-spacer/>
-                  </v-card-actions>
-                </v-card>
-              </v-dialog>
-              
-            </v-toolbar>
-          </template>
           <template v-slot:item.actions="{ item }">
             <v-icon
               class="mr-2"
@@ -215,8 +227,6 @@
         </v-data-table>
       </template>
     </v-container>
-    {{ }}
-    <v-spacer></v-spacer>
     {{ desserts }}
   </div>
 </template>
@@ -228,8 +238,9 @@ export default {
     return {
       search: "",
       menu: "",
-      dialog: false,
+      dialogAddItem: false,
       dialogDelete: false,
+      isEdited: false,
       editedIndex: -1,
       headers: [], // Titulo das colunas
       desserts: [], // itens da tabela
@@ -240,42 +251,72 @@ export default {
     initialize() {
       for (let i = 0;  i < this.params.length; i++) {
         if (this.params[i].header) {
-          this.headers.push({text: this.params[i].text, value: this.params[i].value }) // Adiciona os os titulos da tabela
+          this.headers.push({text: this.params[i].text, value: this.params[i].value })
         }
-        let editableItemInput = this.params[i].input
         let editableItemValue = this.params[i].value
+        let editableItemInput = this.params[i].input
         this.editedItem[editableItemValue] = editableItemInput;
       }
       this.headers.push({text: 'Ações', value: 'actions', sortable: false})
     },
-    save () {
+    saveNew () {
       let result = {}
-      //result.banana = 'a'
-      //result["teste"] = "b"
       for (let i = 0; i < this.params.length; i++) {
         result[this.params[i].value] = this.params[i].input
       }
-      console.log(result)
       this.desserts.push(result)
-      this.dialog = false
+      this.dialogAddItem = false
+      this.cleanFields()
+    },
+    saveEdited () {
+
+      this.isEdited = false
+    },
+    close () {
+      this.dialogAddItem = false
+      this.cleanFields()
+      this.isEdited = false
+    },
+    cleanFields () {
+      for (let i = 0; i < this.params.length; i++) {
+        if (this.params[i].type === "text") {
+          this.params[i].input = ""
+        }
+        else if (this.params[i].type === "boolean") {
+          this.params[i].input = false
+        }
+        else if (this.params[i].type === "select") {
+          this.params[i].input = ""
+        }
+        else if (this.params[i].type === "integer") {
+          this.params[i].input = ""
+        }
+        else if (this.params[i].type === "decimal") {
+          this.params[i].input = ""
+        }
+        else if (this.params[i].type === "date") {
+          this.params[i].input = ""
+        }
+        else if (this.params[i].type === "time") {
+          this.params[i].input = ""
+        }
+      }
     },
     editItem (item) {
       this.editedIndex = this.desserts.indexOf(item)
       this.editedItem = Object.assign({}, item)
-      this.dialog = true
+      this.dialogAddItem = true
+      this.isEdited = true
     },
-
     deleteItem (item) {
       this.editedIndex = this.desserts.indexOf(item)
       this.editedItem = Object.assign({}, item)
       this.dialogDelete = true
     },
-
     deleteItemConfirm () {
       this.desserts.splice(this.editedIndex, 1)
       this.closeDelete()
     },
-
     closeDelete () {
       this.dialogDelete = false
       this.$nextTick(() => {
@@ -283,19 +324,10 @@ export default {
         this.editedIndex = -1
       })
     },
-  },
-  watch: {
-    dialog (val) {
-      if (val) {
-        this.$nextTick(() => {
-        this.editedItem = Object.assign({}, this.defaultItem)
-        this.editedIndex = -1
-      })
-      }
-    },
-    dialogDelete (val) {
-      val || this.closeDelete()
-    },
+    addItem () {
+      this.dialogAddItem = true
+
+    }
   },
   created () {
       this.initialize()
