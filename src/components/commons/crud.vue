@@ -9,7 +9,7 @@
               color="primary"
               dark
               class="mb-2"
-              @click="dialogAddItem = true"
+              @click="addItem"
             >
               Adicionar item
             </v-btn>
@@ -163,7 +163,7 @@
                   v-if="!isEdited"
                   @click="saveNew"
                 >
-                  Salvar n
+                  Salvar novo
                 </v-btn>
                 <v-btn
                   color="blue darken-1"
@@ -171,7 +171,7 @@
                   v-if="isEdited"
                   @click="saveEdited"
                 >
-                  Salvar
+                  Salvar editado
                 </v-btn>
               </v-card-actions>
             </v-card>
@@ -235,11 +235,12 @@ export default {
       menu: "",
       dialogAddItem: false,
       dialogDelete: false,
-      isEdited: false, // Sinaliza quando o botão de edição está em uso
+      isEdited: false, // alerna entre os botões salvar novo e savar alterado
       editedIndex: -1,
       headers: [],
       desserts: [],
       editedItem: {},
+      // defaltInputs: {},
     }
   },
   methods: {
@@ -250,9 +251,10 @@ export default {
         }
         //let editableItemValue = this.params[i].value
         //let editableItemInput = this.params[i].input
-        //this.editedItem[editableItemValue] = editableItemInput;
-        //console.log(this.editedItem)
+        //this.defaltInputs[editableItemValue] = editableItemInput;
+        
       }
+      //console.log(this.defaltInputs)
       this.headers.push({text: 'Ações', value: 'actions', sortable: false})
     },
     saveNew () {
@@ -282,8 +284,8 @@ export default {
     },
     close () {
       this.dialogAddItem = false
-      this.cleanFields()
       this.isEdited = false
+      this.cleanFields()
     },
     cleanFields () {
       for (let i = 0; i < this.params.length; i++) {
@@ -311,13 +313,44 @@ export default {
       }
     },
     editItem (item) {
-      //for (let i = 0; i < array.length; i++) {
-      //  
-      //}
       this.editedIndex = this.desserts.indexOf(item)
       this.editedItem = Object.assign({}, item)
-      this.dialogAddItem = true
+      //console.log(this.editedItem)
+      let cont = -1;
+      //let size = Object.keys(this.editedItem).length;
+      //console.log(size)
+      for (let key in this.editedItem) {
+        cont++
+        console.log("key = " + key)
+        console.log("contador = " + cont)
+        //console.log(val)
+        if (key === "name") {
+          this.params[cont].input = this.editedItem[key]
+        }
+        else if (key === "description") {
+          this.params[cont].input = this.editedItem[key]
+        }
+        else if (key === "checked") {
+          this.params[cont].input = this.editedItem[key]
+        }
+        else if (key === "status") {
+          this.params[cont].input = this.editedItem[key]
+        }
+        else if (key === "integer") {
+          this.params[cont].input = this.editedItem[key]
+        }
+        else if (key === "decimal") {
+          this.params[cont].input = this.editedItem[key]
+        }
+        else if (key === "date") {
+          this.params[cont].input = this.editedItem[key]
+        }
+        else if (key === "time") {
+          this.params[cont].input = this.editedItem[key]
+        }
+      }
       this.isEdited = true
+      this.dialogAddItem = true
     },
     deleteItem (item) {
       this.editedIndex = this.desserts.indexOf(item)
@@ -331,6 +364,10 @@ export default {
       this.dialogDelete = false
       this.editedIndex = -1
     },
+    addItem() {
+      this.dialogAddItem = true
+      this.cleanFields()
+    }
   },
   created () {
       this.initialize()
