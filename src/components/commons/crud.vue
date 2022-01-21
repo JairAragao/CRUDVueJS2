@@ -9,7 +9,7 @@
               color="primary"
               dark
               class="mb-2"
-              @click="addItem"
+              @click="dialogAddItem = true"
             >
               Adicionar item
             </v-btn>
@@ -186,7 +186,7 @@
               <v-card-title class="text-h5">Tem certeza de que deseja excluir este item?</v-card-title>
               <v-card-actions>
                 <v-spacer/>
-                <v-btn color="blue darken-1" text @click="closeDelete">Não</v-btn>
+                <v-btn color="blue darken-1" text @click="deleteItemDenied">Não</v-btn>
                 <v-btn color="blue darken-1" text @click="deleteItemConfirm">Sim</v-btn>
                 <v-spacer/>
               </v-card-actions>
@@ -212,22 +212,17 @@
           class="elevation-1"
         >
           <template v-slot:item.actions="{ item }">
-            <v-icon
-              class="mr-2"
-              @click="editItem(item)"
-            >
+            <v-icon @click="editItem(item)">
               mdi-pencil
             </v-icon>
-            <v-icon
-              @click="deleteItem(item)"
-            >
+            <v-icon @click="deleteItem(item)">
               mdi-delete
             </v-icon>
           </template>
         </v-data-table>
       </template>
     </v-container>
-    {{ desserts }}
+    {{  }}
   </div>
 </template>
 
@@ -240,10 +235,10 @@ export default {
       menu: "",
       dialogAddItem: false,
       dialogDelete: false,
-      isEdited: false,
+      isEdited: false, // Sinaliza quando o botão de edição está em uso
       editedIndex: -1,
-      headers: [], // Titulo das colunas
-      desserts: [], // itens da tabela
+      headers: [],
+      desserts: [],
       editedItem: {},
     }
   },
@@ -253,9 +248,10 @@ export default {
         if (this.params[i].header) {
           this.headers.push({text: this.params[i].text, value: this.params[i].value })
         }
-        let editableItemValue = this.params[i].value
-        let editableItemInput = this.params[i].input
-        this.editedItem[editableItemValue] = editableItemInput;
+        //let editableItemValue = this.params[i].value
+        //let editableItemInput = this.params[i].input
+        //this.editedItem[editableItemValue] = editableItemInput;
+        //console.log(this.editedItem)
       }
       this.headers.push({text: 'Ações', value: 'actions', sortable: false})
     },
@@ -268,9 +264,21 @@ export default {
       this.dialogAddItem = false
       this.cleanFields()
     },
-    saveEdited () {
-
+    saveEdited (item) {
+      //let result = {}
+      
+      this.editedIndex = this.desserts.indexOf(item)
+      this.editedItem = Object.assign({}, item)
+      console.log(this.editedItem)
+      /* if (this.editedIndex > -1) {
+        Object.assign(this.desserts[this.editedIndex], this.editedItem)
+      } else {
+        this.desserts.push(this.editedItem)
+      }
+      this.close() */
+      this.dialogAddItem = false
       this.isEdited = false
+      this.cleanFields()
     },
     close () {
       this.dialogAddItem = false
@@ -303,6 +311,9 @@ export default {
       }
     },
     editItem (item) {
+      //for (let i = 0; i < array.length; i++) {
+      //  
+      //}
       this.editedIndex = this.desserts.indexOf(item)
       this.editedItem = Object.assign({}, item)
       this.dialogAddItem = true
@@ -310,24 +321,16 @@ export default {
     },
     deleteItem (item) {
       this.editedIndex = this.desserts.indexOf(item)
-      this.editedItem = Object.assign({}, item)
       this.dialogDelete = true
     },
     deleteItemConfirm () {
       this.desserts.splice(this.editedIndex, 1)
-      this.closeDelete()
-    },
-    closeDelete () {
       this.dialogDelete = false
-      this.$nextTick(() => {
-        this.editedItem = Object.assign({}, this.defaultItem)
-        this.editedIndex = -1
-      })
     },
-    addItem () {
-      this.dialogAddItem = true
-
-    }
+    deleteItemDenied () {
+      this.dialogDelete = false
+      this.editedIndex = -1
+    },
   },
   created () {
       this.initialize()
