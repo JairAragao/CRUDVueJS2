@@ -239,36 +239,34 @@ export default {
       editedIndex: -1,
       headers: [],
       desserts: [],
+      inputDefalt: [], // usado para limpar os valores cleanFields
     }
   },
   methods: {
     initialize() {
       for (let i = 0;  i < this.params.length; i++) {
-        if (this.params[i].header) {
+        if (this.params[i].header, this.params[i].type) {
           this.headers.push({text: this.params[i].text, value: this.params[i].value })
-        }
-        //let editableItemValue = this.params[i].value
-        //let editableItemInput = this.params[i].input
-        //this.defaltInputs[editableItemValue] = editableItemInput;
-        
+          this.inputDefalt.push({type: this.params[i].type, input: this.params[i].input })
+        }  
       }
-      //console.log(this.defaltInputs)
       this.headers.push({text: 'Ações', value: 'actions', sortable: false})
+      //console.log(this.inputDefalt[1].input)
     },
     saveNew () {
-      let result = {}
+      let newItem = {}
       for (let i = 0; i < this.params.length; i++) {
-        result[this.params[i].value] = this.params[i].input
+        newItem[this.params[i].value] = this.params[i].input
       }
-      this.desserts.push(result)
+      this.desserts.push(newItem)
       this.close()
     },
     saveEdited () {
-      let result = {}
+      let editedItem = {}
       for (let i = 0; i < this.params.length; i++) {
-        result[this.params[i].value] = this.params[i].input 
+        editedItem[this.params[i].value] = this.params[i].input 
       }
-      Object.assign(this.desserts[this.editedIndex], result)
+      Object.assign(this.desserts[this.editedIndex], editedItem)
       this.close()
     },
     close () {
@@ -278,34 +276,15 @@ export default {
     },
     cleanFields () {
       for (let i = 0; i < this.params.length; i++) {
-        if (this.params[i].type === "text") {
-          this.params[i].input = ""
-        }
-        else if (this.params[i].type === "boolean") {
-          this.params[i].input = false
-        }
-        else if (this.params[i].type === "select") {
-          this.params[i].input = ""
-        }
-        else if (this.params[i].type === "integer") {
-          this.params[i].input = ""
-        }
-        else if (this.params[i].type === "decimal") {
-          this.params[i].input = ""
-        }
-        else if (this.params[i].type === "date") {
-          this.params[i].input = ""
-        }
-        else if (this.params[i].type === "time") {
-          this.params[i].input = ""
+        if (this.params[i].type === this.inputDefalt[i].type) {
+          this.params[i].input = this.inputDefalt[i].input
         }
       }
     },
     editItem (item) {
-      let editedItem = {}
+      let cont = -1
       this.editedIndex = this.desserts.indexOf(item)
-      editedItem = Object.assign({}, item)
-      let cont = -1;
+      let editedItem = Object.assign({}, item) // puxa o oobjeto do item
       for (let key in editedItem) {
         cont++
         if (key === this.params[cont].value) {
