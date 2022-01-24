@@ -239,9 +239,6 @@ export default {
       editedIndex: -1,
       headers: [],
       desserts: [],
-      editedItem: {},
-      // defaltInputs: {},
-      tempCont: 0,
     }
   },
   methods: {
@@ -305,20 +302,19 @@ export default {
       }
     },
     editItem (item) {
+      let editedItem = {}
       this.editedIndex = this.desserts.indexOf(item)
-      this.editedItem = Object.assign({}, item)
-      //console.log(this.editedItem)
+      editedItem = Object.assign({}, item)
       let cont = -1;
-      for (let key in this.editedItem) {
+      for (let key in editedItem) {
         cont++
         if (key === this.params[cont].value) {
-          this.params[cont].input = this.editedItem[key]
+          this.params[cont].input = editedItem[key]
         }
         else {
           console.log("chave não encontrada nos itens para edição")
         }
       }
-      this.tempCont = cont
       this.isEdited = true
       this.dialogAddItem = true
     },
