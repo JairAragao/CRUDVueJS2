@@ -315,37 +315,11 @@ export default {
     editItem (item) {
       this.editedIndex = this.desserts.indexOf(item)
       this.editedItem = Object.assign({}, item)
-      //console.log(this.editedItem)
+      
       let cont = -1;
-      //let size = Object.keys(this.editedItem).length;
-      //console.log(size)
       for (let key in this.editedItem) {
         cont++
-        console.log("key = " + key)
-        console.log("contador = " + cont)
-        //console.log(val)
-        if (key === "name") {
-          this.params[cont].input = this.editedItem[key]
-        }
-        else if (key === "description") {
-          this.params[cont].input = this.editedItem[key]
-        }
-        else if (key === "checked") {
-          this.params[cont].input = this.editedItem[key]
-        }
-        else if (key === "status") {
-          this.params[cont].input = this.editedItem[key]
-        }
-        else if (key === "integer") {
-          this.params[cont].input = this.editedItem[key]
-        }
-        else if (key === "decimal") {
-          this.params[cont].input = this.editedItem[key]
-        }
-        else if (key === "date") {
-          this.params[cont].input = this.editedItem[key]
-        }
-        else if (key === "time") {
+        if (key === this.params[cont].value) {
           this.params[cont].input = this.editedItem[key]
         }
       }
