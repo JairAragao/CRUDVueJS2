@@ -241,6 +241,7 @@ export default {
       desserts: [],
       editedItem: {},
       // defaltInputs: {},
+      tempCont: 0,
     }
   },
   methods: {
@@ -263,24 +264,15 @@ export default {
         result[this.params[i].value] = this.params[i].input
       }
       this.desserts.push(result)
-      this.dialogAddItem = false
-      this.cleanFields()
+      this.close()
     },
-    saveEdited (item) {
-      //let result = {}
-      
-      this.editedIndex = this.desserts.indexOf(item)
-      this.editedItem = Object.assign({}, item)
-      console.log(this.editedItem)
-      /* if (this.editedIndex > -1) {
-        Object.assign(this.desserts[this.editedIndex], this.editedItem)
-      } else {
-        this.desserts.push(this.editedItem)
+    saveEdited () {
+      let result = {}
+      for (let i = 0; i < this.params.length; i++) {
+        result[this.params[i].value] = this.params[i].input 
       }
-      this.close() */
-      this.dialogAddItem = false
-      this.isEdited = false
-      this.cleanFields()
+      Object.assign(this.desserts[this.editedIndex], result)
+      this.close()
     },
     close () {
       this.dialogAddItem = false
@@ -315,14 +307,18 @@ export default {
     editItem (item) {
       this.editedIndex = this.desserts.indexOf(item)
       this.editedItem = Object.assign({}, item)
-      
+      //console.log(this.editedItem)
       let cont = -1;
       for (let key in this.editedItem) {
         cont++
         if (key === this.params[cont].value) {
           this.params[cont].input = this.editedItem[key]
         }
+        else {
+          console.log("chave não encontrada nos itens para edição")
+        }
       }
+      this.tempCont = cont
       this.isEdited = true
       this.dialogAddItem = true
     },
