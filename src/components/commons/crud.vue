@@ -3,18 +3,13 @@
     <v-container>
       <template>
         <template>
-           <!-- BOTÃO ADICIONAR ITEM -->
+          <!-- BOTÃO ADICIONAR ITEM -->
           <template>
-            <v-btn
-              color="primary"
-              dark
-              class="mb-2"
-              @click="addItem"
-            >
+            <v-btn color="primary" dark class="mb-2" @click="addItem">
               Adicionar item
             </v-btn>
           </template>
-          
+
           <!-- BOTÕES E CAMPOS DO "ADICIONAR ITEM" -->
           <v-dialog
             v-model="dialogAddItem"
@@ -26,10 +21,7 @@
                 <v-container fluid>
                   <v-row>
                     <template v-for="field in params">
-                      <v-col
-                        cols="auto"
-                        :key="field.text"
-                      >
+                      <v-col cols="auto" :key="field.text">
                         <!-- CAMPOS DE TEXTO -->
                         <v-text-field
                           v-if="field.type === 'text' && field.maxLength <= 100"
@@ -40,7 +32,9 @@
                           :error="field.required === true && field.input === ''"
                         />
                         <v-textarea
-                          v-else-if="field.type === 'text' && field.maxLength > 100"
+                          v-else-if="
+                            field.type === 'text' && field.maxLength > 100
+                          "
                           v-model.trim="field.input"
                           :name="field.value"
                           :label="field.text"
@@ -62,7 +56,10 @@
                           :name="field.value"
                           :label="field.text"
                           :maxlength="field.maxLength"
-                          :error="field.required === true && field.input === '' || !Number.isInteger(field.input)"
+                          :error="
+                            (field.required === true && field.input === '') ||
+                            !Number.isInteger(field.input)
+                          "
                         />
                         <v-text-field
                           v-else-if="field.type === 'decimal'"
@@ -85,9 +82,7 @@
                         <!-- CAMPO DATA -->
                         <template v-else-if="field.type === 'date'">
                           <v-row>
-                            <v-col
-                              cols="auto"
-                            >
+                            <v-col cols="auto">
                               <v-menu
                                 v-model="menu"
                                 :close-on-content-click="false"
@@ -107,7 +102,10 @@
                                     elevation="5"
                                     readonly
                                     :label="field.text"
-                                    :error="field.required === true && field.input === ''"
+                                    :error="
+                                      field.required === true &&
+                                      field.input === ''
+                                    "
                                   />
                                 </template>
                                 <v-date-picker
@@ -126,7 +124,9 @@
                             </v-col>
                             <v-col>
                               <v-icon
-                                v-if="field.input !== null && field.input !== ''"
+                                v-if="
+                                  field.input !== null && field.input !== ''
+                                "
                                 @click="field.input = null"
                                 color="red accent-1"
                                 >fas fa-window-close</v-icon
@@ -137,7 +137,9 @@
                             v-model="field.input"
                             type="time"
                             name="hora-cons"
-                            :error="field.required === true && field.input === ''"
+                            :error="
+                              field.required === true && field.input === ''
+                            "
                           />
                         </template>
                         <!-- CAMPO DATA E HORA -->
@@ -150,45 +152,44 @@
 
               <v-card-actions>
                 <v-spacer></v-spacer>
-                <v-btn
-                  color="blue darken-1"
-                  text
-                  @click="close"
-                >
+                <v-btn color="blue darken-1" text @click="close">
                   Cancelar
                 </v-btn>
                 <v-btn
-                  color="blue darken-1"
+                  :color="isEdited ? 'blue darken-1' : 'green darken-1'"
                   text
-                  v-if="!isEdited"
-                  @click="saveNew"
+                  @click="isEdited ? saveEdited() : saveNew()"
                 >
-                  Salvar novo
+                  {{ isEdited ? "Salvar editado" : "Salvar novo" }}
                 </v-btn>
-                <v-btn
+
+                <!-- <v-btn
                   color="blue darken-1"
                   text
-                  v-if="isEdited"
+                  v-else
                   @click="saveEdited"
                 >
                   Salvar editado
-                </v-btn>
+                </v-btn> -->
               </v-card-actions>
             </v-card>
           </v-dialog>
 
           <!-- CONFIRMAÇÃO DE EXCLUSÃO ITEM -->
-          <v-dialog 
-            v-model="dialogDelete" 
-            max-width="600px"
-          >
+          <v-dialog v-model="dialogDelete" max-width="600px">
             <v-card>
-              <v-card-title class="text-h5">Tem certeza de que deseja excluir este item?</v-card-title>
+              <v-card-title class="text-h5"
+                >Tem certeza de que deseja excluir este item?</v-card-title
+              >
               <v-card-actions>
-                <v-spacer/>
-                <v-btn color="blue darken-1" text @click="deleteItemDenied">Não</v-btn>
-                <v-btn color="blue darken-1" text @click="deleteItemConfirm">Sim</v-btn>
-                <v-spacer/>
+                <v-spacer />
+                <v-btn color="blue darken-1" text @click="deleteItemDenied"
+                  >Não</v-btn
+                >
+                <v-btn color="blue darken-1" text @click="deleteItemConfirm"
+                  >Sim</v-btn
+                >
+                <v-spacer />
               </v-card-actions>
             </v-card>
           </v-dialog>
@@ -206,23 +207,15 @@
         </v-card-title>
 
         <!-- TABELA -->
-        <v-data-table
-          :headers="headers"
-          :items="desserts"
-          class="elevation-1"
-        >
+        <v-data-table :headers="headers" :items="desserts" class="elevation-1">
           <template v-slot:item.actions="{ item }">
-            <v-icon @click="editItem(item)">
-              mdi-pencil
-            </v-icon>
-            <v-icon @click="deleteItem(item)">
-              mdi-delete
-            </v-icon>
+            <v-icon @click="editItem(item)"> mdi-pencil </v-icon>
+            <v-icon @click="deleteItem(item)"> mdi-delete </v-icon>
           </template>
         </v-data-table>
       </template>
     </v-container>
-    {{  }}
+    {{}}
   </div>
 </template>
 
@@ -239,83 +232,111 @@ export default {
       editedIndex: -1,
       headers: [],
       desserts: [],
-      inputDefalt: [], // usado para limpar os valores cleanFields
-    }
+      inputDefault: [], // usado para limpar os valores cleanFields
+    };
   },
   methods: {
-    initialize() {
-      for (let i = 0;  i < this.params.length; i++) {
-        if (this.params[i].header, this.params[i].type) {
-          this.headers.push({text: this.params[i].text, value: this.params[i].value })
-          this.inputDefalt.push({type: this.params[i].type, input: this.params[i].input })
-        }  
-      }
-      this.headers.push({text: 'Ações', value: 'actions', sortable: false})
-      //console.log(this.inputDefalt[1].input)
-    },
-    saveNew () {
-      let newItem = {}
+    async initialize() {
+      await this.$http
+        .get("http://192.168.2.80:3000", {
+          params: {},
+        })
+        .then((res) => {
+          this.desserts = res.data;
+        });
       for (let i = 0; i < this.params.length; i++) {
-        newItem[this.params[i].value] = this.params[i].input
+        if (this.params[i].header) {
+          this.headers.push({
+            text: this.params[i].text,
+            value: this.params[i].value,
+          });
+        }
+        this.inputDefault.push({
+          value: this.params[i].value,
+          input: this.params[i].input,
+        });
       }
-      this.desserts.push(newItem)
-      this.close()
+      this.headers.push({ text: "Ações", value: "actions", sortable: false });
     },
-    saveEdited () {
-      let editedItem = {}
+    getName() {
+      //let names = {}
+      // for (let i = 0; i < array.length; i++) {
+      //   const element = array[i];
+      // }
+    },
+    async saveNew() {
+      let newItem = {};
       for (let i = 0; i < this.params.length; i++) {
-        editedItem[this.params[i].value] = this.params[i].input 
+        newItem[this.params[i].value] = this.params[i].input;
       }
-      Object.assign(this.desserts[this.editedIndex], editedItem)
-      this.close()
+      await this.$http.post("http://192.168.2.80:3000", newItem)
+      .then((res) => {
+        console.log(res)
+        this.desserts = res.data;
+        
+      })
+      .catch((err) => {
+        alert(err.response.data)
+        console.log(err)
+      })
+      //this.desserts.push(newItem);
+      this.close();
     },
-    close () {
-      this.dialogAddItem = false
-      this.isEdited = false
-      this.cleanFields()
-    },
-    cleanFields () {
+    saveEdited() {
+      let editedItem = {};
       for (let i = 0; i < this.params.length; i++) {
-        if (this.params[i].type === this.inputDefalt[i].type) {
-          this.params[i].input = this.inputDefalt[i].input
+        editedItem[this.params[i].value] = this.params[i].input;
+      }
+      Object.assign(this.desserts[this.editedIndex], editedItem);
+      this.close();
+    },
+    close() {
+      this.dialogAddItem = false;
+      this.isEdited = false;
+      this.cleanFields();
+    },
+    cleanFields() {
+      for (let i = 0; i < this.params.length; i++) {
+        if (this.params[i].value === this.inputDefault[i].value) {
+          this.params[i].input = this.inputDefault[i].input;
         }
       }
     },
-    editItem (item) {
-      let cont = -1
-      this.editedIndex = this.desserts.indexOf(item)
-      let editedItem = Object.assign({}, item) // puxa o oobjeto do item
-      for (let key in editedItem) {
-        cont++
-        if (key === this.params[cont].value) {
-          this.params[cont].input = editedItem[key]
-        }
-        else {
-          console.log("chave não encontrada nos itens para edição")
-        }
+    editItem(item) {
+      //let cont = -1
+      this.editedIndex = this.desserts.indexOf(item);
+      for (let key in item) {
+        //cont++
+        // if (key === this.params[cont].value) {
+        //   this.params[cont].input = item[key]
+        // }
+        let found = this.params.find((x) => x.value == key);
+        //console.log(key)
+        found.input = item[key];
+        //console.log(found)
       }
-      this.isEdited = true
-      this.dialogAddItem = true
+      this.isEdited = true;
+      this.dialogAddItem = true;
     },
-    deleteItem (item) {
-      this.editedIndex = this.desserts.indexOf(item)
-      this.dialogDelete = true
+    deleteItem(item) {
+      this.editedIndex = this.desserts.indexOf(item);
+      this.dialogDelete = true;
     },
-    deleteItemConfirm () {
-      this.desserts.splice(this.editedIndex, 1)
-      this.dialogDelete = false
+    deleteItemConfirm() {
+      this.desserts.splice(this.editedIndex, 1);
+      this.dialogDelete = false;
     },
-    deleteItemDenied () {
-      this.dialogDelete = false
-      this.editedIndex = -1
+    deleteItemDenied() {
+      this.dialogDelete = false;
+      this.editedIndex = -1;
     },
     addItem() {
-      this.dialogAddItem = true
-      this.cleanFields()
-    }
+      this.dialogAddItem = true;
+      this.cleanFields();
+    },
   },
-  created () {
-      this.initialize()
+  created() {
+    this.initialize();
   },
 };
 </script>

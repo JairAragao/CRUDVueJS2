@@ -43,7 +43,7 @@ export default {
         type: "boolean",
         header: true,
         edit: true,
-      },      
+      },     
       {
         text: "Status",
         value: "status",
