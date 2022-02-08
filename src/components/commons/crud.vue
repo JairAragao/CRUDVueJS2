@@ -215,7 +215,6 @@
         </v-data-table>
       </template>
     </v-container>
-    {{}}
   </div>
 </template>
 
@@ -237,13 +236,7 @@ export default {
   },
   methods: {
     async initialize() {
-      await this.$http
-        .get("http://192.168.2.80:3000", {
-          params: {},
-        })
-        .then((res) => {
-          this.desserts = res.data;
-        });
+      await this.getItens()
       for (let i = 0; i < this.params.length; i++) {
         if (this.params[i].header) {
           this.headers.push({
@@ -258,6 +251,16 @@ export default {
       }
       this.headers.push({ text: "Ações", value: "actions", sortable: false });
     },
+    async getItens() {
+      await this.$http
+        .get("http://192.168.2.80:3000", {
+          params: {},
+        })
+        .then((res) => {
+          this.desserts = res.data;
+        });
+    },
+
     getName() {
       //let names = {}
       // for (let i = 0; i < array.length; i++) {
@@ -269,25 +272,36 @@ export default {
       for (let i = 0; i < this.params.length; i++) {
         newItem[this.params[i].value] = this.params[i].input;
       }
-      await this.$http.post("http://192.168.2.80:3000", newItem)
-      .then((res) => {
-        console.log(res)
-        this.desserts = res.data;
-        
-      })
-      .catch((err) => {
-        alert(err.response.data)
-        console.log(err)
-      })
+      await this.$http
+        .post("http://192.168.2.80:3000", newItem)
+        .then((res) => {
+          console.log(res);
+          this.desserts = res.data;
+        })
+        .catch((err) => {
+          alert(err.response.data);
+          console.log(err);
+        });
       //this.desserts.push(newItem);
       this.close();
     },
-    saveEdited() {
+    async saveEdited() {
       let editedItem = {};
       for (let i = 0; i < this.params.length; i++) {
         editedItem[this.params[i].value] = this.params[i].input;
       }
-      Object.assign(this.desserts[this.editedIndex], editedItem);
+      await this.$http
+        .put("http://192.168.2.80:3000", editedItem)
+        .then( async (res) => {
+          console.log(res);
+          //this.desserts = res.data;
+          alert(res.data);
+          await this.getItens();
+        })
+        .catch((err) => {
+          alert(err.response.data);
+          console.log(err);
+        });
       this.close();
     },
     close() {
@@ -306,12 +320,13 @@ export default {
       //let cont = -1
       this.editedIndex = this.desserts.indexOf(item);
       for (let key in item) {
+        //console.log(key)
         //cont++
         // if (key === this.params[cont].value) {
         //   this.params[cont].input = item[key]
         // }
         let found = this.params.find((x) => x.value == key);
-        //console.log(key)
+
         found.input = item[key];
         //console.log(found)
       }

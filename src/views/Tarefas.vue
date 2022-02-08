@@ -17,6 +17,15 @@ export default {
   data: () => ({
     bilder: [
       {
+        text: "ID",
+        value: "id",
+        input: 0,
+        type: "integer",
+        header: true,
+        edit: false,
+        required: true
+      },
+      {
         text: "Nome",
         value: "name",
         input: "",
