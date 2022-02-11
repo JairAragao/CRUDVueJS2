@@ -17,15 +17,6 @@ export default {
   data: () => ({
     bilder: [
       {
-        text: "ID",
-        value: "id",
-        input: 0,
-        type: "integer",
-        header: true,
-        edit: false,
-        required: true
-      },
-      {
         text: "Nome",
         value: "name",
         input: "",
@@ -62,8 +53,8 @@ export default {
         edit: true,
         maxLength: 5,
         items: [
-          {text: "Sim", value: true},
-          {text: "Não", value: false}
+          {text: "Sim", value: 1},
+          {text: "Não", value: 2}
         ],
         required: true
       },
@@ -74,6 +65,7 @@ export default {
         type: "integer",
         maxLength: 3,
         header: true,
+        visible: true,
         edit: true,
         required: true
       },
@@ -82,6 +74,7 @@ export default {
         value: "decimal",
         input: "",
         type: "decimal",
+        edit: true,
         header: true,
         required: true
       },
@@ -90,6 +83,7 @@ export default {
         value: "date",
         input: "",
         type: "date",
+        edit: true,
         header: true,
         required: true
       },
@@ -98,6 +92,7 @@ export default {
         value: "time",
         input: "",
         type: "time",
+        edit: true,
         header: true,
         required: true
       },
