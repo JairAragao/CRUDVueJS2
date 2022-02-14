@@ -131,7 +131,9 @@
                             </v-col>
                             <v-col>
                               <v-icon
-                                v-if="field.input !== null && field.input !== ''"
+                                v-if="
+                                  field.input !== null && field.input !== ''
+                                "
                                 :disabled="!field.edit"
                                 @click="field.input = null"
                                 color="red accent-1"
@@ -261,6 +263,9 @@ export default {
         .get("http://192.168.2.80:3000")
         .then((res) => {
           this.desserts = res.data;
+        })
+        .catch((err) => {
+          alert(err.response.data);
         });
     },
     async addItem() {
@@ -311,14 +316,14 @@ export default {
     },
 
     deleteItem(item) {
-      this.seletedId = item.id
+      this.seletedId = item.id;
       this.dialogDeleteItem = true;
     },
     async deleteItemConfirm() {
       await this.$http
         .delete("http://192.168.2.80:3000", {
           params: {
-            id: this.seletedId
+            id: this.seletedId,
           },
         })
         .then(async (res) => {
@@ -330,8 +335,6 @@ export default {
           alert(err.response.data);
           console.log(err);
         });
-
-      
     },
     deleteItemDenied() {
       this.dialogDeleteItem = false;
