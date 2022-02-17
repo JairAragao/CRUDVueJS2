@@ -279,13 +279,14 @@ export default {
       }
       await this.$http
         .post("http://192.168.2.80:3000", newItem)
-        .then((res) => {
-          this.desserts = res.data;
+        .then(async (res) => {
+          alert(res.data);
+          await this.getItens();
         })
         .catch((err) => {
           alert(err.response.data);
-          console.log(err);
         });
+
       this.close();
     },
     editItem(item) {
@@ -307,14 +308,12 @@ export default {
         .then(async (res) => {
           alert(res.data);
           await this.getItens();
+          this.close();
         })
         .catch((err) => {
           alert(err.response.data);
-          console.log(err);
         });
-      this.close();
     },
-
     deleteItem(item) {
       this.seletedId = item.id;
       this.dialogDeleteItem = true;
@@ -333,7 +332,6 @@ export default {
         })
         .catch((err) => {
           alert(err.response.data);
-          console.log(err);
         });
     },
     deleteItemDenied() {

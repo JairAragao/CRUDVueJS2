@@ -53,8 +53,8 @@ export default {
         edit: true,
         maxLength: 5,
         items: [
-          {text: "Sim", value: 1},
-          {text: "Não", value: 2}
+          {text: "Sim", value: true},
+          {text: "Não", value: false}
         ],
         required: true
       },
