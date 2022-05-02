@@ -282,9 +282,9 @@
       },
 
       editItem (item) {
-        console.log(this.editedIndex)
+        
         this.editedIndex = this.desserts.indexOf(item)
-        console.log(this.editedIndex)
+        
         this.editedItem = Object.assign({}, item)
         this.dialog = true
       },
